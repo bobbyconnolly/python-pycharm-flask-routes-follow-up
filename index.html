@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the Library Management System</title>
+    <style>
+        :root {
+            --code-bg: #f5f5f5;
+            --border-color: #e0e0e0;
+            --primary-color: #2563eb;
+            --text-color: #1f2937;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .inner-container {
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            pre {
+                padding-left: 5px !important;
+            }
+
+            .container {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+
+            .inner-container {
+                padding: 10px 0;
+                border: none;
+            }
+
+            .diagram {
+                padding: 0 !important;
+            }
+        }
+
+        .language-toggle {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0;
+            z-index: 100;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .toggle-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .keyword { color: #0550ae; }
+        .string { color: #0a7a00; }
+        .comment { color: #6b7280; }
+        .function { color: #8250df; }
+        .number { color: #116329; }
+
+        .diagram {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        [data-lang="vi"] {
+            display: none;
+        }
+
+        .active[data-lang="vi"] {
+            display: block;
+        }
+
+        .active[data-lang="en"] {
+            display: block;
+        }
+        
+        .collapsible {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+
+        .collapsible-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+        }
+
+        .collapsible-content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible.open .collapsible-content {
+            max-height: 500px;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <div class="toggle-group">
+            <label>
+                <input type="radio" name="language" value="en" checked>
+                English
+            </label>
+            <label>
+                <input type="radio" name="language" value="vi">
+                Tiếng Việt
+            </label>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="inner-container">
+            <div data-lang="en">
+                <h1>Understanding the Library Management System</h1>
+                <p>This guide will help you understand the key concepts behind our Flask-based library management system. We'll explore how the different parts work together and dive into important programming concepts.</p>
+            </div>
+            <div data-lang="vi">
+                <h1>Tìm Hiểu Hệ Thống Quản Lý Thư Viện</h1>
+                <p>Hướng dẫn này sẽ giúp bạn hiểu các khái niệm chính đằng sau hệ thống quản lý thư viện dựa trên Flask. Chúng ta sẽ khám phá cách các phần khác nhau hoạt động cùng nhau và đi sâu vào các khái niệm lập trình quan trọng.</p>
+            </div>
+
+            <section>
+                <div data-lang="en">
+                    <h2>HTTP Request/Response Cycle</h2>
+                    <p>Before diving into the code, it's essential to understand how web applications work:</p>
+                </div>
+                <div data-lang="vi">
+                    <h2>Chu Trình Request/Response HTTP</h2>
+                    <p>Trước khi đi sâu vào mã nguồn, điều quan trọng là phải hiểu cách hoạt động của ứng dụng web:</p>
+                </div>
+
+                <svg class="diagram" viewBox="0 0 600 300">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4b5563"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- Browser Box -->
+                    <rect x="50" y="50" width="200" height="100" rx="10" fill="#e5e7eb" stroke="#4b5563"/>
+                    <text x="150" y="100" text-anchor="middle" fill="#1f2937">Browser</text>
+                    
+                    <!-- Flask Server Box -->
+                    <rect x="350" y="50" width="200" height="100" rx="10" fill="#e5e7eb" stroke="#4b5563"/>
+                    <text x="450" y="100" text-anchor="middle" fill="#1f2937">Flask Server</text>
+                    
+                    <!-- Database Box -->
+                    <rect x="350" y="200" width="200" height="50" rx="10" fill="#e5e7eb" stroke="#4b5563"/>
+                    <text x="450" y="230" text-anchor="middle" fill="#1f2937">SQLite Database</text>
+                    
+                    <!-- Arrows -->
+                    <path d="M 250 80 L 350 80" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="300" y="70" text-anchor="middle" fill="#4b5563" font-size="12">HTTP Request</text>
+                    
+                    <path d="M 350 120 L 250 120" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="300" y="140" text-anchor="middle" fill="#4b5563" font-size="12">HTTP Response</text>
+                    
+                    <path d="M 450 150 L 450 200" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)"/>
+                    <text x="470" y="175" text-anchor="middle" fill="#4b5563" font-size="12">Query/Update</text>
+                </svg>
+
+                <div data-lang="en">
+                    <h3>Key Concepts:</h3>
+                    <ul>
+                        <li>The browser sends HTTP requests to specific routes on our Flask server</li>
+                        <li>Flask processes these requests using route handlers (functions)</li>
+                        <li>Route handlers interact with the database when needed</li>
+                        <li>Flask sends back HTTP responses (HTML, status codes, messages)</li>
+                    </ul>
+                </div>
+                <div data-lang="vi">
+                    <h3>Khái Niệm Chính:</h3>
+                    <ul>
+                        <li>Trình duyệt gửi các yêu cầu HTTP đến các routes cụ thể trên máy chủ Flask của chúng ta</li>
+                        <li>Flask xử lý các yêu cầu này bằng các hàm xử lý route</li>
+                        <li>Các hàm xử lý route tương tác với cơ sở dữ liệu khi cần</li>
+                        <li>Flask gửi lại các phản hồi HTTP (HTML, mã trạng thái, thông báo)</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="inner-container">
+            <section id="route-handling">
+                <div data-lang="en">
+                    <h2>Understanding Route Handlers</h2>
+                    <p>Route handlers in Flask follow a consistent pattern known as "business logic flow". Let's break down the structure using the <code>create_loan</code> route as an example:</p>
+                </div>
+                <div data-lang="vi">
+                    <h2>Hiểu về Route Handlers</h2>
+                    <p>Các route handler trong Flask tuân theo một mẫu nhất quán được gọi là "luồng logic nghiệp vụ". Hãy phân tích cấu trúc bằng ví dụ về route <code>create_loan</code>:</p>
+                </div>
+
+                <pre><span class="keyword">@app.route</span>(<span class="string">'/create_loan'</span>, methods=[<span class="string">'POST'</span>])
+<span class="keyword">def</span> <span class="function">create_loan</span>():
+    <span class="comment"># 1. Receive input from client</span>
+    member_id = request.form.get(<span class="string">'member_id'</span>)
+    book_id = request.form.get(<span class="string">'book_id'</span>)
+
+    <span class="comment"># 2. Validate input data</span>
+    <span class="keyword">if not</span> member_id <span class="keyword">or not</span> book_id:
+        <span class="keyword">return</span> <span class="string">"Missing required fields"</span>, <span class="number">400</span>
+
+    <span class="comment"># 3. Database operations</span>
+    <span class="keyword">try</span>:
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        <span class="comment"># Query existing data</span>
+        book = cursor.execute(<span class="string">'SELECT status FROM books WHERE id = ?'</span>, 
+                            (book_id,)).fetchone()
+
+        <span class="comment"># Validate business rules</span>
+        <span class="keyword">if not</span> book:
+            <span class="keyword">return</span> <span class="string">"Book not found"</span>, <span class="number">404</span>
+        
+        <span class="comment"># Perform mutations</span>
+        cursor.execute(<span class="string">'INSERT INTO loans ...'</span>)
+        
+        <span class="comment"># 4. Return response</span>
+        <span class="keyword">return</span> <span class="string">"Loan created successfully"</span>, <span class="number">201</span>
+        
+    <span class="keyword">finally</span>:
+        conn.close()</pre>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">🔍 Learn More: Route Handler Patterns</div>
+                        <div data-lang="vi">🔍 Tìm Hiểu Thêm: Các Mẫu Route Handler</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <div data-lang="en">
+                            <p>Every route handler typically follows these steps:</p>
+                            <ol>
+                                <li><strong>Input Reception</strong>: Get data from request.form, request.args, or URL parameters</li>
+                                <li><strong>Validation</strong>: Check if data is present and in correct format</li>
+                                <li><strong>Database Operations</strong>: Query or modify the database</li>
+                                <li><strong>Response</strong>: Return appropriate data and status code</li>
+                            </ol>
+                        </div>
+                        <div data-lang="vi">
+                            <p>Mỗi route handler thường tuân theo các bước sau:</p>
+                            <ol>
+                                <li><strong>Nhận Input</strong>: Lấy dữ liệu từ request.form, request.args, hoặc tham số URL</li>
+                                <li><strong>Xác Thực</strong>: Kiểm tra dữ liệu có tồn tại và đúng định dạng</li>
+                                <li><strong>Thao Tác Database</strong>: Truy vấn hoặc sửa đổi cơ sở dữ liệu</li>
+                                <li><strong>Phản Hồi</strong>: Trả về dữ liệu và mã trạng thái phù hợp</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <section id="datetime-methods">
+                    <div data-lang="en">
+                        <h2>Python Objects and Methods</h2>
+                        <p>In Python, objects (like datetime) come with built-in methods - think of them as "tools in a toolbox". You access these tools using the dot (.) operator.</p>
+                    </div>
+                    <div data-lang="vi">
+                        <h2>Đối Tượng và Phương Thức trong Python</h2>
+                        <p>Trong Python, các đối tượng (như datetime) đi kèm với các phương thức có sẵn - hãy nghĩ về chúng như "các công cụ trong hộp công cụ". Bạn truy cập các công cụ này bằng toán tử dấu chấm (.).</p>
+                    </div>
+
+                    <div class="demo-container">
+                        <pre><span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+<span class="comment"># Creating a datetime object</span>
+now = datetime.now()
+
+<span class="comment"># Using different methods</span>
+formatted_date = now.strftime(<span class="string">'%Y-%m-%d'</span>)
+future_date = now + timedelta(days=<span class="number">14</span>)</pre>
+                    </div>
+
+                    <div data-lang="en">
+                        <h3>Common Datetime Methods</h3>
+                    </div>
+                    <div data-lang="vi">
+                        <h3>Các Phương Thức Datetime Phổ Biến</h3>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th data-lang="en">Description</th>
+                                <th data-lang="vi">Mô tả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>strftime(format)</code></td>
+                                <td data-lang="en">Converts datetime to string</td>
+                                <td data-lang="vi">Chuyển datetime thành chuỗi</td>
+                            </tr>
+                            <tr>
+                                <td><code>strptime(string, format)</code></td>
+                                <td data-lang="en">Creates datetime from string</td>
+                                <td data-lang="vi">Tạo datetime từ chuỗi</td>
+                            </tr>
+                            <tr>
+                                <td><code>timestamp()</code></td>
+                                <td data-lang="en">Converts to Unix timestamp</td>
+                                <td data-lang="vi">Chuyển đổi thành Unix timestamp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <section id="database-state">
+                    <div data-lang="en">
+                        <h2>Understanding State and Database Operations</h2>
+                        <p>The database maintains the "state" of our application - it remembers information between requests. This is crucial because HTTP is stateless (each request is independent).</p>
+                    </div>
+                    <div data-lang="vi">
+                        <h2>Hiểu về Trạng Thái và Thao Tác Database</h2>
+                        <p>Database duy trì "trạng thái" của ứng dụng - nó ghi nhớ thông tin giữa các request. Điều này quan trọng vì HTTP là stateless (mỗi request độc lập với nhau).</p>
+                    </div>
+
+                    <pre><span class="comment"># Example of database state management</span>
+<span class="keyword">def</span> <span class="function">return_book</span>(loan_id):
+    <span class="keyword">try</span>:
+        conn = get_db()
+        cursor = conn.cursor()
+
+        <span class="comment"># Query current state</span>
+        loan = cursor.execute(<span class="string">'SELECT * FROM loans WHERE id = ?'</span>, 
+                            (loan_id,)).fetchone()
+
+        <span class="comment"># Update state</span>
+        cursor.execute(<span class="string">'UPDATE books SET status = ? WHERE id = ?'</span>, 
+                      (<span class="string">'available'</span>, loan[<span class="string">'book_id'</span>]))
+
+        <span class="comment"># Commit changes to persist new state</span>
+        conn.commit()
+
+    <span class="keyword">finally</span>:
+        <span class="comment"># Always close the connection</span>
+        conn.close()</pre>
+
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <div data-lang="en">💡 Understanding try-finally</div>
+                            <div data-lang="vi">💡 Hiểu về try-finally</div>
+                        </div>
+                        <div class="collapsible-content">
+                            <div data-lang="en">
+                                <p>The try-finally block ensures that database connections are always closed, even if an error occurs. This is crucial for:</p>
+                                <ul>
+                                    <li>Preventing resource leaks</li>
+                                    <li>Maintaining database connection limits</li>
+                                    <li>Ensuring data consistency</li>
+                                </ul>
+                            </div>
+                            <div data-lang="vi">
+                                <p>Khối try-finally đảm bảo rằng các kết nối database luôn được đóng, ngay cả khi xảy ra lỗi. Điều này quan trọng cho:</p>
+                                <ul>
+                                    <li>Ngăn chặn rò rỉ tài nguyên</li>
+                                    <li>Duy trì giới hạn kết nối database</li>
+                                    <li>Đảm bảo tính nhất quán của dữ liệu</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="inner-container">
+            <section id="template-rendering">
+                <div data-lang="en">
+                    <h2>Template Rendering with Flask</h2>
+                    <p>Understanding when and where code executes is crucial. Let's look at how Flask and Jinja2 work together:</p>
+                </div>
+                <div data-lang="vi">
+                    <h2>Render Template với Flask</h2>
+                    <p>Hiểu khi nào và ở đâu mã được thực thi là rất quan trọng. Hãy xem cách Flask và Jinja2 làm việc cùng nhau:</p>
+                </div>
+
+                <pre><span class="comment"># In your HTML template</span>
+&lt;form action=<span class="string">"{{ url_for('create_loan') }}"</span> method=<span class="string">"post"</span>&gt;
+
+<span class="comment"># What actually gets sent to the browser</span>
+&lt;form action=<span class="string">"/create_loan"</span> method=<span class="string">"post"</span>&gt;</pre>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">🔄 Server vs Browser Execution</div>
+                        <div data-lang="vi">🔄 Thực Thi ở Server và Browser</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <div data-lang="en">
+                            <h4>Server-side (Flask/Python):</h4>
+                            <ul>
+                                <li>Template processing (Jinja2)</li>
+                                <li>Database queries</li>
+                                <li>Business logic</li>
+                                <li>Authentication</li>
+                            </ul>
+                            <h4>Browser-side (JavaScript):</h4>
+                            <ul>
+                                <li>User interface interactions</li>
+                                <li>Form validation</li>
+                                <li>Dynamic content updates</li>
+                                <li>API calls</li>
+                            </ul>
+                        </div>
+                        <div data-lang="vi">
+                            <h4>Phía Server (Flask/Python):</h4>
+                            <ul>
+                                <li>Xử lý template (Jinja2)</li>
+                                <li>Truy vấn database</li>
+                                <li>Logic nghiệp vụ</li>
+                                <li>Xác thực</li>
+                            </ul>
+                            <h4>Phía Browser (JavaScript):</h4>
+                            <ul>
+                                <li>Tương tác giao diện người dùng</li>
+                                <li>Kiểm tra form</li>
+                                <li>Cập nhật nội dung động</li>
+                                <li>Gọi API</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="debugging">
+                <div data-lang="en">
+                    <h2>Debugging Flask Applications</h2>
+                    <p>When things go wrong (and they will!), here's how to find and fix problems:</p>
+                </div>
+                <div data-lang="vi">
+                    <h2>Debug Ứng Dụng Flask</h2>
+                    <p>Khi có sự cố xảy ra (và chắc chắn sẽ có!), đây là cách tìm và sửa lỗi:</p>
+                </div>
+
+                <pre><span class="comment"># Enable debug mode</span>
+<span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:
+    app.run(debug=<span class="keyword">True</span>)
+
+<span class="comment"># Add print statements for debugging</span>
+<span class="keyword">@app.route</span>(<span class="string">'/create_loan'</span>, methods=[<span class="string">'POST'</span>])
+<span class="keyword">def</span> <span class="function">create_loan</span>():
+    <span class="function">print</span>(<span class="string">f"Form data: {request.form}"</span>)  <span class="comment"># Debug print</span>
+    member_id = request.form.get(<span class="string">'member_id'</span>)</pre>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">🐛 Common Debugging Tips</div>
+                        <div data-lang="vi">🐛 Các Mẹo Debug Thường Gặp</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <div data-lang="en">
+                            <ul>
+                                <li><strong>Check the Terminal:</strong> Flask prints errors and your print() statements here</li>
+                                <li><strong>Browser Developer Tools:</strong> Check the Network tab for request/response details</li>
+                                <li><strong>Database Verification:</strong> Use DB Browser for SQLite to check data directly</li>
+                                <li><strong>Common Issues:</strong>
+                                    <ul>
+                                        <li>Forgetting to commit database changes</li>
+                                        <li>Not closing database connections</li>
+                                        <li>Incorrect route methods (GET vs POST)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <div data-lang="vi">
+                            <ul>
+                                <li><strong>Kiểm Tra Terminal:</strong> Flask in ra lỗi và các câu lệnh print() của bạn ở đây</li>
+                                <li><strong>Công Cụ Developer Tools:</strong> Kiểm tra tab Network để xem chi tiết request/response</li>
+                                <li><strong>Kiểm Tra Database:</strong> Sử dụng DB Browser for SQLite để kiểm tra dữ liệu trực tiếp</li>
+                                <li><strong>Các Lỗi Thường Gặp:</strong>
+                                    <ul>
+                                        <li>Quên commit thay đổi database</li>
+                                        <li>Không đóng kết nối database</li>
+                                        <li>Phương thức route không đúng (GET vs POST)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="improvements">
+                <div data-lang="en">
+                    <h2>Current Limitations and Improvements</h2>
+                    <p>Our current application has several limitations that would need to be addressed in a real-world scenario:</p>
+                </div>
+                <div data-lang="vi">
+                    <h2>Hạn Chế và Cải Tiến</h2>
+                    <p>Ứng dụng hiện tại của chúng ta có một số hạn chế cần được giải quyết trong tình huống thực tế:</p>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">✨ Suggested Improvements</div>
+                        <div data-lang="vi">✨ Đề Xuất Cải Tiến</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <div data-lang="en">
+                            <h4>1. Data Display</h4>
+                            <p>Add routes to view:</p>
+                            <ul>
+                                <li>List of all books and their status</li>
+                                <li>Member information and active loans</li>
+                                <li>Loan history and due dates</li>
+                            </ul>
+
+                            <h4>2. User Experience</h4>
+                            <ul>
+                                <li>Add search functionality</li>
+                                <li>Show confirmation messages</li>
+                                <li>Add pagination for large lists</li>
+                            </ul>
+
+                            <h4>3. Error Handling</h4>
+                            <ul>
+                                <li>Better error messages</li>
+                                <li>Input validation on the client side</li>
+                                <li>Proper error pages</li>
+                            </ul>
+                        </div>
+                        <div data-lang="vi">
+                            <h4>1. Hiển Thị Dữ Liệu</h4>
+                            <p>Thêm các route để xem:</p>
+                            <ul>
+                                <li>Danh sách tất cả sách và trạng thái</li>
+                                <li>Thông tin thành viên và các khoản vay đang hoạt động</li>
+                                <li>Lịch sử cho mượn và ngày đến hạn</li>
+                            </ul>
+
+                            <h4>2. Trải Nghiệm Người Dùng</h4>
+                            <ul>
+                                <li>Thêm chức năng tìm kiếm</li>
+                                <li>Hiển thị thông báo xác nhận</li>
+                                <li>Thêm phân trang cho danh sách lớn</li>
+                            </ul>
+
+                            <h4>3. Xử Lý Lỗi</h4>
+                            <ul>
+                                <li>Thông báo lỗi tốt hơn</li>
+                                <li>Kiểm tra đầu vào ở phía client</li>
+                                <li>Trang lỗi phù hợp</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div data-lang="en">
+                    <h3>Example Route for Displaying Data</h3>
+                    <p>Here's how we could implement a route to display all books:</p>
+                </div>
+                <div data-lang="vi">
+                    <h3>Ví Dụ Route Hiển Thị Dữ Liệu</h3>
+                    <p>Đây là cách chúng ta có thể triển khai route để hiển thị tất cả sách:</p>
+                </div>
+
+                <pre><span class="keyword">@app.route</span>(<span class="string">'/books'</span>)
+<span class="keyword">def</span> <span class="function">list_books</span>():
+    <span class="keyword">try</span>:
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        books = cursor.execute("""
+            <span class="string">SELECT books.*, 
+                   COALESCE(loans.due_date, 'Available') as status
+            FROM books 
+            LEFT JOIN loans 
+                ON books.id = loans.book_id 
+                AND loans.returned_date IS NULL</span>
+        """).fetchall()
+        
+        <span class="keyword">return</span> render_template(<span class="string">'books.html'</span>, books=books)
+        
+    <span class="keyword">finally</span>:
+        conn.close()</pre>
+            </section>
+
+            <section id="final-notes">
+                <div data-lang="en">
+                    <h2>Final Notes</h2>
+                    <p>Remember that this project is focused on teaching route handling and database interactions. In a real application, you would need to consider:</p>
+                    <ul>
+                        <li>User authentication and authorization</li>
+                        <li>Input sanitization and security</li>
+                        <li>Error logging and monitoring</li>
+                        <li>Backup and recovery procedures</li>
+                        <li>Performance optimization</li>
+                    </ul>
+                </div>
+                <div data-lang="vi">
+                    <h2>Ghi Chú Cuối Cùng</h2>
+                    <p>Hãy nhớ rằng dự án này tập trung vào việc dạy xử lý route và tương tác database. Trong một ứng dụng thực tế, bạn cần xem xét:</p>
+                    <ul>
+                        <li>Xác thực và phân quyền người dùng</li>
+                        <li>Làm sạch đầu vào và bảo mật</li>
+                        <li>Ghi log lỗi và giám sát</li>
+                        <li>Quy trình sao lưu và khôi phục</li>
+                        <li>Tối ưu hiệu suất</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Language toggle functionality
+        document.querySelectorAll('input[name="language"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const selectedLang = e.target.value;
+                // Hide all language elements first
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    if (el.dataset.lang === selectedLang) {
+                        el.style.display = 'block';  // or 'table-cell' for td elements
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // Special handling for table cells
+                document.querySelectorAll('td[data-lang], th[data-lang]').forEach(el => {
+                    if (el.dataset.lang === selectedLang) {
+                        el.style.display = 'table-cell';
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Initialize English as default
+        document.querySelectorAll('[data-lang]').forEach(el => {
+            if (el.dataset.lang === 'en') {
+                el.style.display = el.tagName.toLowerCase() === 'td' || el.tagName.toLowerCase() === 'th' 
+                    ? 'table-cell' 
+                    : 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+
+        // Collapsible functionality
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.parentElement;
+                content.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
