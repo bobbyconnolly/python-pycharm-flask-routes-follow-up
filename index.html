@@ -34,7 +34,7 @@
 
         @media (max-width: 768px) {
             pre {
-                padding-left: 5px !important;
+                padding-left: 8px !important;
             }
 
             .container {
@@ -137,6 +137,36 @@
         .collapsible.open .collapsible-content {
             max-height: 500px;
             padding: 1rem;
+        }
+
+        /* Add to existing CSS */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            margin: 1rem 0;
+        }
+
+        .table-container table {
+            min-width: 800px; /* Ensures table won't squish below this width */
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-container th,
+        .table-container td {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .table-container th {
+            background-color: #f8fafc;
+        }
+
+        /* Make code samples in table not wrap */
+        .table-container code {
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -354,6 +384,142 @@ future_date = now + timedelta(days=<span class="number">14</span>)</pre>
                     </table>
                 </section>
 
+                <section id="python-methods">
+                    <div data-lang="en">
+                        <h2>Common Python Types and Their Methods</h2>
+                        <p>Every type in Python comes with useful built-in methods. Understanding these "tools in the toolbox" helps you manipulate data efficiently. Sometimes you'll need to convert between types - this is called "type conversion" or "casting".</p>
+                    </div>
+                    <div data-lang="vi">
+                        <h2>Các Kiểu Dữ Liệu Python Phổ Biến và Phương Thức của Chúng</h2>
+                        <p>Mọi kiểu dữ liệu trong Python đều đi kèm với các phương thức có sẵn hữu ích. Hiểu về những "công cụ trong hộp công cụ" này giúp bạn xử lý dữ liệu hiệu quả. Đôi khi bạn cần chuyển đổi giữa các kiểu - điều này được gọi là "chuyển đổi kiểu".</p>
+                    </div>
+                
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Method</th>
+                                    <th data-lang="en">Description</th>
+                                    <th data-lang="vi">Mô tả</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>str</td>
+                                    <td><code>split()</code></td>
+                                    <td data-lang="en">Splits string into list</td>
+                                    <td data-lang="vi">Tách chuỗi thành list</td>
+                                    <td><code>"a,b,c".split(',') → ['a','b','c']</code></td>
+                                </tr>
+                                <tr>
+                                    <td>str</td>
+                                    <td><code>strip()</code></td>
+                                    <td data-lang="en">Removes whitespace</td>
+                                    <td data-lang="vi">Xóa khoảng trắng</td>
+                                    <td><code>" hello ".strip() → "hello"</code></td>
+                                </tr>
+                                <tr>
+                                    <td>str</td>
+                                    <td><code>isdigit()</code></td>
+                                    <td data-lang="en">Checks if string is number</td>
+                                    <td data-lang="vi">Kiểm tra chuỗi có phải số</td>
+                                    <td><code>"123".isdigit() → True</code></td>
+                                </tr>
+                                <tr>
+                                    <td>list</td>
+                                    <td><code>append()</code></td>
+                                    <td data-lang="en">Adds item to end</td>
+                                    <td data-lang="vi">Thêm phần tử vào cuối</td>
+                                    <td><code>[1,2].append(3) → [1,2,3]</code></td>
+                                </tr>
+                                <tr>
+                                    <td>list</td>
+                                    <td><code>sort()</code></td>
+                                    <td data-lang="en">Sorts the list in-place</td>
+                                    <td data-lang="vi">Sắp xếp list</td>
+                                    <td><code>[3,1,2].sort() → [1,2,3]</code></td>
+                                </tr>
+                                <tr>
+                                    <td>dict</td>
+                                    <td><code>get()</code></td>
+                                    <td data-lang="en">Safe way to get value</td>
+                                    <td data-lang="vi">Cách an toàn để lấy giá trị</td>
+                                    <td><code>dict.get('key', 'default')</code></td>
+                                </tr>
+                                <tr>
+                                    <td>dict</td>
+                                    <td><code>keys()</code></td>
+                                    <td data-lang="en">Gets all keys</td>
+                                    <td data-lang="vi">Lấy tất cả keys</td>
+                                    <td><code>{'a':1, 'b':2}.keys()</code></td>
+                                </tr>
+                                <tr>
+                                    <td>int/float</td>
+                                    <td><code>as_integer_ratio()</code></td>
+                                    <td data-lang="en">Converts to fraction (as tuple)</td>
+                                    <td data-lang="vi">Chuyển thành phân số (như tuple)</td>
+                                    <td><code>3.5.as_integer_ratio() → (7,2)</code></td>
+                                </tr>
+                                <tr>
+                                    <td>datetime</td>
+                                    <td><code>strftime()</code></td>
+                                    <td data-lang="en">Formats date to string</td>
+                                    <td data-lang="vi">Định dạng ngày thành chuỗi</td>
+                                    <td><code>date.strftime('%Y-%m-%d')</code></td>
+                                </tr>
+                                <tr>
+                                    <td>timedelta</td>
+                                    <td><code>total_seconds()</code></td>
+                                    <td data-lang="en">Gets total time in seconds</td>
+                                    <td data-lang="vi">Lấy tổng thời gian theo giây</td>
+                                    <td><code>delta.total_seconds()</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                
+                    <div class="collapsible">
+                        <div class="collapsible-header">
+                            <div data-lang="en">🔄 Type Conversion Examples</div>
+                            <div data-lang="vi">🔄 Ví Dụ về Chuyển Đổi Kiểu</div>
+                        </div>
+                        <div class="collapsible-content">
+                            <pre><span class="comment"># Safe string to int conversion</span>
+<span class="keyword">def</span> <span class="function">safe_int_convert</span>(value, default=0):
+    <span class="keyword">try</span>:
+        <span class="keyword">return</span> int(value)
+    <span class="keyword">except</span> ValueError:
+        <span class="keyword">return</span> default
+
+<span class="comment"># Examples of type conversion</span>
+member_id = safe_int_convert(request.form.get(<span class="string">'member_id'</span>))
+price = float(<span class="string">'10.99'</span>)
+items = list((<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>))  <span class="comment"># tuple to list</span>
+numbers = [int(x) <span class="keyword">for</span> x <span class="keyword">in</span> <span class="string">'123'</span>]  <span class="comment"># string to list of ints</span></pre>
+                
+                            <div data-lang="en">
+                                <p>Always use safe conversion when handling user input:</p>
+                                <ul>
+                                    <li>Use <code>try/except</code> for conversions that might fail</li>
+                                    <li>Provide default values for failed conversions</li>
+                                    <li>Validate data before conversion when possible (<code>isdigit()</code>, etc.)</li>
+                                </ul>
+                            </div>
+                            <div data-lang="vi">
+                                <p>Luôn sử dụng chuyển đổi an toàn khi xử lý đầu vào của người dùng:</p>
+                                <ul>
+                                    <li>Sử dụng <code>try/except</code> cho các chuyển đổi có thể thất bại</li>
+                                    <li>Cung cấp giá trị mặc định cho các chuyển đổi thất bại</li>
+                                    <li>Xác thực dữ liệu trước khi chuyển đổi khi có thể (<code>isdigit()</code>, v.v.)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section id="database-state">
                     <div data-lang="en">
                         <h2>Understanding State and Database Operations</h2>
@@ -411,6 +577,92 @@ future_date = now + timedelta(days=<span class="number">14</span>)</pre>
                     </div>
                 </section>
             </section>
+
+            <section id="return-statements">
+                <div data-lang="en">
+                    <h3>Understanding Return Statements</h3>
+                    <p>Return statements have two important characteristics in our route handlers:</p>
+                </div>
+                <div data-lang="vi">
+                    <h3>Hiểu về Câu Lệnh Return</h3>
+                    <p>Câu lệnh return có hai đặc điểm quan trọng trong các route handler của chúng ta:</p>
+                </div>
+            
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">1️⃣ Early Returns</div>
+                        <div data-lang="vi">1️⃣ Return Sớm</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <pre><span class="keyword">def</span> <span class="function">create_loan</span>():
+    <span class="comment"># Validation checks first</span>
+    <span class="keyword">if not</span> member_id:
+        <span class="keyword">return</span> <span class="string">"Missing member ID"</span>, <span class="number">400</span>  <span class="comment"># Return early - no more code runs!</span>
+        
+    <span class="comment"># Database operations only happen if validation passes</span>
+    book = cursor.execute(<span class="string">'SELECT status FROM books WHERE id = ?'</span>, 
+                        (book_id,)).fetchone()
+                        
+    <span class="keyword">if not</span> book:
+        <span class="keyword">return</span> <span class="string">"Book not found"</span>, <span class="number">404</span>  <span class="comment"># Another early return</span>
+        
+    <span class="comment"># This code only runs if all checks pass</span>
+    cursor.execute(<span class="string">'INSERT INTO loans ...'</span>)</pre>
+                        
+                        <div data-lang="en">
+                            <p>Early returns are a pattern where we check for invalid conditions first and return immediately if found. This:</p>
+                            <ul>
+                                <li>Prevents unnecessary database operations</li>
+                                <li>Makes code easier to follow</li>
+                                <li>Keeps our database operations safer</li>
+                            </ul>
+                        </div>
+                        <div data-lang="vi">
+                            <p>Return sớm là một mẫu trong đó chúng ta kiểm tra các điều kiện không hợp lệ trước và return ngay lập tức nếu tìm thấy. Điều này:</p>
+                            <ul>
+                                <li>Ngăn chặn các thao tác database không cần thiết</li>
+                                <li>Làm cho mã dễ theo dõi hơn</li>
+                                <li>Giữ cho các thao tác database an toàn hơn</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        <div data-lang="en">2️⃣ Tuple Returns</div>
+                        <div data-lang="vi">2️⃣ Return Tuple</div>
+                    </div>
+                    <div class="collapsible-content">
+                        <pre><span class="comment"># These are all tuples!</span>
+<span class="keyword">return</span> <span class="string">"Success"</span>, <span class="number">200</span>             <span class="comment"># (message, status_code)</span>
+<span class="keyword">return</span> (<span class="string">"Not found"</span>, <span class="number">404</span>)         <span class="comment"># Same thing with parentheses</span>
+<span class="keyword">return</span> messages[<span class="string">'error'</span>], <span class="number">500</span>    <span class="comment"># Variables work too!</span>
+
+<span class="comment"># Just like any other tuple</span>
+my_tuple = (<span class="string">"Success"</span>, <span class="number">200</span>)
+<span class="keyword">return</span> my_tuple</pre>
+            
+                        <div data-lang="en">
+                            <p>When we return two values separated by a comma in Flask routes, we're actually returning a tuple where:</p>
+                            <ul>
+                                <li>First element: Response message or data</li>
+                                <li>Second element: HTTP status code</li>
+                            </ul>
+                            <p>The comma creates a tuple whether you use parentheses or not!</p>
+                        </div>
+                        <div data-lang="vi">
+                            <p>Khi chúng ta return hai giá trị được phân tách bằng dấu phẩy trong các route Flask, chúng ta thực sự đang return một tuple trong đó:</p>
+                            <ul>
+                                <li>Phần tử đầu tiên: Thông báo phản hồi hoặc dữ liệu</li>
+                                <li>Phần tử thứ hai: Mã trạng thái HTTP</li>
+                            </ul>
+                            <p>Dấu phẩy tạo ra một tuple cho dù bạn có sử dụng dấu ngoặc đơn hay không!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
     </div>
 
